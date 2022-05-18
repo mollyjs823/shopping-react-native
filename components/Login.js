@@ -13,8 +13,26 @@ const Login = () => {
             const user = userCreds.user;
             console.log(user.email);
         })
-        .catch(error => alert(error.message))
-    }
+        .catch(error => alert(error.message));
+    };
+
+    const handleSignIn = () => {
+        auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(userCreds => {
+            const user = userCreds.user;
+            console.log(user.email);
+        })
+        .catch(error => {
+            if (error.code === 'auth/email-already-in-use') {
+                console.log('That email address is already in use!');
+            }
+            if (error.code === 'auth/invalid-email') {
+                console.log('That email address is invalid!');
+            }
+            console.log(error);
+        });
+    };
 
     return ( 
         <KeyboardAvoidingView>
@@ -39,7 +57,7 @@ const Login = () => {
             <View style = {styles.container}>
                 <TouchableOpacity
                     style={styles.btn}
-                    onPress={() => { }}
+                    onPress={ handleSignIn }
                 >
                     <Text style={styles.btnText}>Log In</Text>
                 </TouchableOpacity>
