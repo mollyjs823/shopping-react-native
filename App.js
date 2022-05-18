@@ -1,12 +1,31 @@
-import React, {useState} from "react";
-import { View, StyleSheet, FlatList, Alert } from 'react-native';
+import React, {useState, useEffect} from "react";
+import { View, StyleSheet, FlatList, Alert, Text, TouchableOpacity } from 'react-native';
 import uuid from "react-native-uuid";
+import auth from '@react-native-firebase/auth';
 
 import Header from "./components/Header";
 import ListItem from "./components/ListItem";
 import AddItem from "./components/AddItem";
+import Login from "./components/Login";
 
 const App = () => {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  };
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
+
+  const handleSignout = () => {
+    auth().signOut().then(() => console.log("User signed out"));
+  }
+
   const [items, setItems] = useState([
     {
       id: uuid.v4(),
@@ -42,6 +61,16 @@ const App = () => {
     }
   };
 
+  if (initializing) return null;
+
+  if (!user) {
+    return (
+      <View>
+        <Text>SIGN IN USER</Text>
+        <Login />
+      </View>
+    );
+  } else {
   return (
     <View style={styles.container}>
       <Header title="Shopping List" />
@@ -56,8 +85,11 @@ const App = () => {
           />
         )}
       />
+      <TouchableOpacity onPress={handleSignout}>
+        <Text style={styles.btnText}>Sign Out</Text>
+      </TouchableOpacity>
     </View>
-  );
+  )};
 };
 
 const styles = StyleSheet.create({
