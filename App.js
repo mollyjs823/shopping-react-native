@@ -25,6 +25,12 @@ const App = () => {
     },
   ]);
 
+  const deleteItem = (id) => {
+    setItems(prevItems => {
+      return prevItems.filter(item => item.id != id);
+    });
+  }
+
   return (
     <View style={styles.container}>
       <Header title="Shopping List" />
@@ -33,6 +39,7 @@ const App = () => {
         renderItem={({item}) => (
           <ListItem
             item={item}
+            deleteItem = {deleteItem}
           />
         )}
       />
