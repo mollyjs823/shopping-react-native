@@ -31,5 +31,3 @@ const styles = StyleSheet.create({
 });
 
 export default ListItem;
-
-//27 min into tutorial
